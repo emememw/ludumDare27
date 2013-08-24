@@ -22,7 +22,7 @@ public class Entity extends Sprite {
 	private boolean jumping;
 	boolean standing;
 	private float standingTime = 0;
-	protected float speed = 550f;
+	protected float speed = 500f;
 	protected Direction currentDirection = Direction.RIGHT;
 	protected boolean blocked;
 	protected boolean dead = false;
@@ -30,8 +30,8 @@ public class Entity extends Sprite {
 	protected float startX;
 	protected float startY;
 
-	private TextureRegion textureRegion1;
-	private TextureRegion textureRegion2;
+	protected TextureRegion textureRegion1;
+	protected TextureRegion textureRegion2;
 	private boolean animationFlag;
 
 	private float animationTime = 0;

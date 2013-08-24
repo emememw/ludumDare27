@@ -19,10 +19,12 @@ public class Player extends Entity {
 
 	public Player(int startGridX, int startGridY) {
 		super(startGridX, startGridY);
+		CameraManager.getInstance().getCamera().position.y = CameraManager.getInstance().getCamera().viewportHeight / 2;
 	}
 
 	private void levelComplete() {
 		GameStateManager.getInstance().nextLevel();
+
 	}
 
 	@Override
@@ -49,6 +51,13 @@ public class Player extends Entity {
 	public void render(SpriteBatch batch) {
 		if (this.recoveryTime <= 0 || this.recoveryTime % 0.1f > 0.05f) {
 			super.render(batch);
+		}
+	}
+
+	private void test() {
+		if (this.isStanding()) {
+			CameraManager.getInstance().getCamera().position.y = this.getY() + CameraManager.getInstance().getCamera().viewportHeight / 2 - Globals.tilesize;
+			CameraManager.getInstance().getCamera().update();
 		}
 	}
 
@@ -105,6 +114,7 @@ public class Player extends Entity {
 	}
 
 	public void updateCamera() {
+
 		CameraManager.getInstance().getCamera().position.x = this.getX();
 		if (this.getY() < CameraManager.getInstance().getCamera().viewportHeight / 2) {
 			CameraManager.getInstance().getCamera().position.y = CameraManager.getInstance().getCamera().viewportHeight / 2;
@@ -113,6 +123,6 @@ public class Player extends Entity {
 					+ (this.getY() - CameraManager.getInstance().getCamera().viewportHeight / 2);
 		}
 		CameraManager.getInstance().getCamera().update();
-	}
 
+	}
 }

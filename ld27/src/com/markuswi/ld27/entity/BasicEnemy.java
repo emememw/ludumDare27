@@ -3,6 +3,7 @@ package com.markuswi.ld27.entity;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 import com.markuswi.ld27.Direction;
 import com.markuswi.ld27.Globals;
 import com.markuswi.ld27.map.MapManager;
@@ -17,6 +18,10 @@ public class BasicEnemy extends Entity {
 	public BasicEnemy(int startGridX, int startGridY) {
 		super(startGridX, startGridY);
 		this.speed = 300;
+
+		this.textureRegion1 = TextureManager.getInstance().getTextureSheets().get("sprites").getTextureRegions()[2][0];
+		this.textureRegion2 = TextureManager.getInstance().getTextureSheets().get("sprites").getTextureRegions()[2][0];
+		this.setRegion(this.textureRegion1);
 	}
 
 	protected void enemyTickLogic() {
