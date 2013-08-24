@@ -66,7 +66,7 @@ public class Entity extends Sprite {
 		} else {
 			this.setRegion(this.textureRegion2);
 		}
-		if (this.currentHorizontalVelocity < 0) {
+		if (this.currentDirection == Direction.LEFT) {
 			this.flip(true, false);
 		}
 
@@ -359,8 +359,14 @@ public class Entity extends Sprite {
 				}
 			}
 		}
-		if (this.currentHorizontalVelocity != 0) {
+		if (this.currentVerticalVelocity != 0) {
+			this.animationFlag = false;
+			this.changeTextureRegion();
+		} else if (this.currentHorizontalVelocity != 0) {
 			this.animationTime += Gdx.graphics.getDeltaTime();
+		} else if (this.standing) {
+			this.animationFlag = true;
+			this.changeTextureRegion();
 		}
 		if (this.animationTime >= 0.1f) {
 			this.changeTextureRegion();

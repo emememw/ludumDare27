@@ -20,6 +20,7 @@ public class GameMap {
 	public void render(SpriteBatch batch) {
 		for (int x = 0; x < this.tiles.length; x++) {
 			for (int y = 0; y < this.tiles[x].length; y++) {
+				batch.draw(Tile.NONE.getTextureRegion(), x * Globals.tilesize, y * Globals.tilesize, Globals.tilesize, Globals.tilesize);
 				if (this.tiles[x][y] != null) {
 					batch.draw(this.tiles[x][y].getTextureRegion(), x * Globals.tilesize, y * Globals.tilesize, Globals.tilesize, Globals.tilesize);
 				}

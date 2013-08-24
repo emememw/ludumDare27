@@ -25,8 +25,8 @@ public class UiManager {
 	}
 
 	public void render(SpriteBatch batch) {
-		Vector3 timerVector = CameraManager.getInstance().translateToWorldCoordinates(100, 100);
-		FontManager.getInstance().getFonts().get("ps2").setColor(Color.BLACK);
+		Vector3 timerVector = CameraManager.getInstance().translateToWorldCoordinates(340, 10);
+		FontManager.getInstance().getFonts().get("ps2").setColor(Color.WHITE);
 		FontManager.getInstance().getFonts().get("ps2").setScale(1f);
 		FontManager.getInstance().getFonts().get("ps2").draw(batch, this.decimalFormat.format(this.secondTimer), timerVector.x, timerVector.y);
 	}

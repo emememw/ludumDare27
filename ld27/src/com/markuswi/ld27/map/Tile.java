@@ -5,7 +5,7 @@ import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 
 public enum Tile {
 
-	TEST(false, false, 0, 0), DOOR(true, false, 1, 0), LAVA(true, true, 2, 0);
+	WALL(false, false, 0, 0), DOOR(true, false, 1, 0), LAVA(true, true, 2, 0), NONE(true, false, 3, 0);
 
 	private int textureRegionX;
 	private int textureRegionY;

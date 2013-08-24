@@ -49,7 +49,7 @@ public class MapManager {
 		for (int x = 0; x < pixels.length; x++) {
 			for (int y = 0; y < pixels[x].length; y++) {
 				if (pixels[x][y].startsWith("000000")) {
-					tiles[x][pixels[x].length - 1 - y] = Tile.TEST;
+					tiles[x][pixels[x].length - 1 - y] = Tile.WALL;
 				} else if (pixels[x][y].startsWith("0000ff")) {
 					tiles[x][pixels[x].length - 1 - y] = Tile.DOOR;
 				} else if (pixels[x][y].startsWith("ff0000")) {
