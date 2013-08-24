@@ -49,6 +49,7 @@ public class GdxGame implements ApplicationListener {
 
 		EntityManager.getInstance().tick();
 		UiManager.getInstance().tick();
+
 	}
 
 	@Override

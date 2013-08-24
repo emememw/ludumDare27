@@ -11,6 +11,7 @@ import com.markuswi.ld27.map.Tile;
 public class Player extends Entity {
 
 	private boolean jumpButtonPressed;
+	private float fireButtonPressedTime;
 
 	public Player(int startGridX, int startGridY) {
 		super(startGridX, startGridY);
@@ -43,6 +44,14 @@ public class Player extends Entity {
 			this.jump();
 		} else if (!Gdx.input.isKeyPressed(Keys.UP)) {
 			this.jumpButtonPressed = false;
+		}
+		if (Gdx.input.isKeyPressed(Keys.X)) {
+			// EntityManager.getInstance().getShots().add(new Shot(this.getX(),
+			// this.getY(), 1000f, this));
+			this.fireButtonPressedTime += Gdx.graphics.getDeltaTime();
+		} else if (!Gdx.input.isKeyPressed(Keys.X) && this.fireButtonPressedTime > 0) {
+			EntityManager.getInstance().getShots().add(new Shot(this.getX(), this.getY() + this.getHeight() / 2, 1000f, this));
+			this.fireButtonPressedTime = 0;
 		}
 
 		if (MapManager.getInstance().getCurrentGameMap().getTiles()[Double.valueOf(this.getX() / Globals.tilesize).intValue()][Double.valueOf(

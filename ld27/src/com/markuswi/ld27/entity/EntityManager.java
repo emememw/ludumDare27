@@ -13,6 +13,7 @@ public class EntityManager {
 
 	private Array<Entity> entites = new Array<Entity>();
 	private Player player;
+	private Array<Shot> shots = new Array<Shot>();
 
 	private EntityManager() {
 		this.entites.add(new Entity(2, 1));
@@ -27,10 +28,17 @@ public class EntityManager {
 		return this.player;
 	}
 
+	public Array<Shot> getShots() {
+		return this.shots;
+	}
+
 	public void render(SpriteBatch batch) {
 		this.player.render(batch);
 		for (Entity entity : this.entites) {
 			entity.render(batch);
+		}
+		for (Shot shot : this.shots) {
+			shot.render(batch);
 		}
 	}
 
@@ -46,6 +54,9 @@ public class EntityManager {
 		this.player.tick();
 		for (Entity entity : this.entites) {
 			entity.tick();
+		}
+		for (Shot shot : this.shots) {
+			shot.tick();
 		}
 	}
 

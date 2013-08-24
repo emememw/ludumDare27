@@ -3,9 +3,9 @@ package com.markuswi.ld27.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
+import com.markuswi.ld27.Direction;
 import com.markuswi.ld27.Globals;
 import com.markuswi.ld27.map.MapManager;
 import com.markuswi.ld27.map.Tile;
@@ -22,10 +22,11 @@ public class Entity extends Sprite {
 	boolean standing;
 	private float standingTime = 0;
 	protected float speed = 550f;
-	private TextureRegion sprite;
+
+	private Direction currentDirection = Direction.RIGHT;
 
 	public Entity(int startGridX, int startGridY) {
-		this.sprite = TextureManager.getInstance().getTextureSheets().get("sprites").getTextureRegions()[0][0];
+		this.setRegion(TextureManager.getInstance().getTextureSheets().get("sprites").getTextureRegions()[0][0]);
 		this.setSize(Globals.tilesize / 2, Globals.tilesize);
 		this.setX(startGridX * Globals.tilesize);
 		this.setY(startGridY * Globals.tilesize);
@@ -160,6 +161,17 @@ public class Entity extends Sprite {
 	protected void moveHorizontal(float velocity) {
 		this.setX(this.getX() + (velocity * Gdx.graphics.getDeltaTime()));
 		this.currentHorizontalVelocity = velocity;
+		if (velocity > 0) {
+			if (this.currentDirection == Direction.LEFT) {
+				this.flip(true, false);
+			}
+			this.currentDirection = Direction.RIGHT;
+		} else {
+			if (this.currentDirection == Direction.RIGHT) {
+				this.flip(true, false);
+			}
+			this.currentDirection = Direction.LEFT;
+		}
 	}
 
 	protected void moveVertical(float velocity) {
@@ -171,8 +183,12 @@ public class Entity extends Sprite {
 		System.out.println("dead");
 	}
 
+	public void onHit() {
+		System.out.println("hit");
+	}
+
 	public void render(SpriteBatch batch) {
-		batch.draw(this.sprite, this.getX() - Globals.tilesize / 4, this.getY(), Globals.tilesize, Globals.tilesize);
+		batch.draw(this, this.getX() - Globals.tilesize / 4, this.getY(), Globals.tilesize, Globals.tilesize);
 	}
 
 	public void tick() {
