@@ -48,6 +48,31 @@ public class Entity extends Sprite {
 		return tiles;
 	}
 
+	protected Array<Tile> getTilesRight() {
+		Array<Tile> tiles = new Array<Tile>();
+		int gridYUp = (int) this.getY() / Globals.tilesize;
+		int gridYDown = (int) (this.getY() + Globals.tilesize) / Globals.tilesize;
+		int gridX = (int) (this.getX() + Globals.tilesize) / Globals.tilesize;
+		if (MapManager.getInstance().getCurrentGameMap().getTiles()[gridX][gridYUp] != null) {
+			tiles.add(MapManager.getInstance().getCurrentGameMap().getTiles()[gridX][gridYUp]);
+		}
+		if (MapManager.getInstance().getCurrentGameMap().getTiles()[gridX][gridYDown] != null) {
+			tiles.add(MapManager.getInstance().getCurrentGameMap().getTiles()[gridX][gridYDown]);
+		}
+		return tiles;
+	}
+
+	private boolean isCollidingRight() {
+		boolean collision = false;
+		for (Tile tile : this.getTilesRight()) {
+			if (!tile.isAccessible()) {
+				collision = true;
+				break;
+			}
+		}
+		return collision;
+	}
+
 	protected void jump() {
 		if (!this.jumping && this.standing) {
 			this.jumping = true;
@@ -86,7 +111,7 @@ public class Entity extends Sprite {
 			for (Tile tile : tilesBelow) {
 				if (!tile.isAccessible()) {
 					this.standing = true;
-					this.setY((int) this.getY() / Globals.tilesize + Globals.tilesize - 1);
+					this.setY(Double.valueOf(this.getY() / Globals.tilesize).intValue() * Globals.tilesize);
 					this.currentVerticalVelocity = 0;
 					break;
 				}
@@ -96,9 +121,12 @@ public class Entity extends Sprite {
 			}
 		}
 
-		System.out.println(this.currentVerticalVelocity);
-
 		this.tickLogic();
+		if (this.isCollidingRight()) {
+			System.out.println(this.getX());
+			this.setX(Double.valueOf(this.getX() / Globals.tilesize).intValue() * Globals.tilesize);
+		}
+
 	}
 
 	protected void tickLogic() {

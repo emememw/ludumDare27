@@ -13,6 +13,12 @@ public class Player extends Entity {
 	}
 
 	@Override
+	public void tick() {
+		super.tick();
+		this.updateCamera();
+	}
+
+	@Override
 	protected void tickLogic() {
 		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
 			this.moveHorizontal(this.speed);
@@ -22,7 +28,6 @@ public class Player extends Entity {
 		if (Gdx.input.isKeyPressed(Keys.UP)) {
 			this.jump();
 		}
-		this.updateCamera();
 	}
 
 	private void updateCamera() {
