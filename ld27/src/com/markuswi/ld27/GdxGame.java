@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.markuswi.gdxessentials.gfx.camera.CameraManager;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
+import com.markuswi.ld27.entity.EntityManager;
 import com.markuswi.ld27.map.MapManager;
 
 public class GdxGame implements ApplicationListener {
@@ -16,6 +17,7 @@ public class GdxGame implements ApplicationListener {
 	public void create() {
 
 		TextureManager.getInstance().addTextureSheet("tiles", "/tiles.png", 16);
+		TextureManager.getInstance().addTextureSheet("sprites", "/sprites.png", 16);
 		this.batch = new SpriteBatch();
 
 	}
@@ -37,7 +39,10 @@ public class GdxGame implements ApplicationListener {
 		this.batch.setProjectionMatrix(CameraManager.getInstance().getCamera().combined);
 		this.batch.begin();
 		MapManager.getInstance().getCurrentGameMap().render(this.batch);
+		EntityManager.getInstance().render(this.batch);
 		this.batch.end();
+
+		EntityManager.getInstance().tick();
 	}
 
 	@Override
