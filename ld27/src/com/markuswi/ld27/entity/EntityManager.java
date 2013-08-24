@@ -12,12 +12,10 @@ public class EntityManager {
 	}
 
 	private Array<Entity> entites = new Array<Entity>();
-	private Player player;
+	private Player player = new Player(1, 2);
 	private Array<Shot> shots = new Array<Shot>();
 
 	private EntityManager() {
-		this.entites.add(new Entity(2, 1));
-		this.player = new Player(1, 2);
 	}
 
 	public Array<Entity> getEntites() {

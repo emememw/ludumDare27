@@ -3,6 +3,7 @@ package com.markuswi.ld27.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 import com.markuswi.ld27.Direction;
@@ -12,9 +13,9 @@ import com.markuswi.ld27.map.Tile;
 
 public class Entity extends Sprite {
 
-	private float currentHorizontalVelocity = 0f;
-	private float currentVerticalVelocity = 0f;
-	private float maxFallVelocity = 2000f;
+	protected float currentHorizontalVelocity = 0f;
+	protected float currentVerticalVelocity = 0f;
+	protected float maxFallVelocity = 2000f;
 	private float fallVelocityStep = 110f;
 	private float maxJumpVelocity = 1550f;
 	private float jumpVelocityStep = 80f;
@@ -22,14 +23,54 @@ public class Entity extends Sprite {
 	boolean standing;
 	private float standingTime = 0;
 	protected float speed = 550f;
+	protected Direction currentDirection = Direction.RIGHT;
+	protected boolean blocked;
+	protected boolean dead = false;
+	protected boolean canFall = true;
+	protected float startX;
+	protected float startY;
 
-	private Direction currentDirection = Direction.RIGHT;
+	private TextureRegion textureRegion1;
+	private TextureRegion textureRegion2;
+	private boolean animationFlag;
+
+	private float animationTime = 0;
+
+	private int hp = 1;
+	private int currentHp = 1;
 
 	public Entity(int startGridX, int startGridY) {
-		this.setRegion(TextureManager.getInstance().getTextureSheets().get("sprites").getTextureRegions()[0][0]);
+
+		this.textureRegion1 = TextureManager.getInstance().getTextureSheets().get("sprites").getTextureRegions()[0][0];
+		this.textureRegion2 = TextureManager.getInstance().getTextureSheets().get("sprites").getTextureRegions()[1][0];
+
+		this.setRegion(this.textureRegion1);
+
 		this.setSize(Globals.tilesize / 2, Globals.tilesize);
 		this.setX(startGridX * Globals.tilesize);
+		this.startX = this.getX();
 		this.setY(startGridY * Globals.tilesize);
+		this.startY = this.getY();
+	}
+
+	public void addToCurrentHp(int amount) {
+		this.currentHp += amount;
+		if (this.currentHp <= 0) {
+			this.onDeath();
+		}
+	}
+
+	private void changeTextureRegion() {
+		if (this.animationFlag) {
+			this.setRegion(this.textureRegion1);
+		} else {
+			this.setRegion(this.textureRegion2);
+		}
+		if (this.currentHorizontalVelocity < 0) {
+			this.flip(true, false);
+		}
+
+		this.animationFlag = !this.animationFlag;
 	}
 
 	private void checkEntityCollision() {
@@ -41,7 +82,7 @@ public class Entity extends Sprite {
 			}
 		} else {
 			if (this.getBoundingRectangle().overlaps(EntityManager.getInstance().getPlayer().getBoundingRectangle())) {
-				System.out.println("colliding with player");
+				EntityManager.getInstance().getPlayer().playerHit(this);
 			}
 		}
 
@@ -53,6 +94,50 @@ public class Entity extends Sprite {
 		} else {
 			this.moveVertical(this.currentVerticalVelocity - this.fallVelocityStep);
 		}
+	}
+
+	public Direction getCurrentDirection() {
+		return this.currentDirection;
+	}
+
+	public float getCurrentHorizontalVelocity() {
+		return this.currentHorizontalVelocity;
+	}
+
+	public int getCurrentHp() {
+		return this.currentHp;
+	}
+
+	public float getCurrentVerticalVelocity() {
+		return this.currentVerticalVelocity;
+	}
+
+	public float getFallVelocityStep() {
+		return this.fallVelocityStep;
+	}
+
+	public int getHp() {
+		return this.hp;
+	}
+
+	public float getJumpVelocityStep() {
+		return this.jumpVelocityStep;
+	}
+
+	public float getMaxFallVelocity() {
+		return this.maxFallVelocity;
+	}
+
+	public float getMaxJumpVelocity() {
+		return this.maxJumpVelocity;
+	}
+
+	public float getSpeed() {
+		return this.speed;
+	}
+
+	public float getStandingTime() {
+		return this.standingTime;
 	}
 
 	protected Array<Tile> getTilesDown() {
@@ -111,6 +196,10 @@ public class Entity extends Sprite {
 		return tiles;
 	}
 
+	public boolean isBlocked() {
+		return this.blocked;
+	}
+
 	private boolean isCollidingLeft() {
 		boolean collision = false;
 		for (Tile tile : this.getTilesLeft()) {
@@ -142,6 +231,14 @@ public class Entity extends Sprite {
 			}
 		}
 		return collision;
+	}
+
+	public boolean isJumping() {
+		return this.jumping;
+	}
+
+	public boolean isStanding() {
+		return this.standing;
 	}
 
 	protected void jump() {
@@ -181,6 +278,7 @@ public class Entity extends Sprite {
 
 	public void onDeath() {
 		System.out.println("dead");
+		this.dead = true;
 	}
 
 	public void onHit() {
@@ -191,7 +289,12 @@ public class Entity extends Sprite {
 		batch.draw(this, this.getX() - Globals.tilesize / 4, this.getY(), Globals.tilesize, Globals.tilesize);
 	}
 
+	public void setJumping(boolean jumping) {
+		this.jumping = jumping;
+	}
+
 	public void tick() {
+
 		this.currentHorizontalVelocity = 0;
 		Array<Tile> tilesBelow = this.getTilesDown();
 		for (Tile tile : tilesBelow) {
@@ -199,50 +302,71 @@ public class Entity extends Sprite {
 				this.onDeath();
 			}
 		}
+		if (!this.dead) {
 
-		if (this.jumping) {
-			if (this.standing) {
-				this.currentVerticalVelocity = this.maxJumpVelocity;
+			if (this.jumping) {
+				if (this.standing) {
+					this.currentVerticalVelocity = this.maxJumpVelocity;
+				}
+				this.jumpMove();
 			}
-			this.jumpMove();
-		}
 
-		this.standing = false;
-		if (!this.jumping) {
-			for (Tile tile : tilesBelow) {
-				if (!tile.isAccessible()) {
-					this.standing = true;
-					this.setY(Double.valueOf(this.getY() / Globals.tilesize).intValue() * Globals.tilesize);
-					this.currentVerticalVelocity = 0;
-					break;
+			this.standing = false;
+			if (!this.jumping && this.canFall) {
+				for (Tile tile : tilesBelow) {
+					if (!tile.isAccessible()) {
+						this.standing = true;
+						this.setY(Double.valueOf(this.getY() / Globals.tilesize).intValue() * Globals.tilesize);
+						this.currentVerticalVelocity = 0;
+						break;
+					}
+				}
+				if (!this.standing) {
+					this.fall();
 				}
 			}
-			if (!this.standing) {
-				this.fall();
+
+			this.tickLogic();
+			if (!this.dead) {
+
+				boolean currentlyBlocked = false;
+				if (this.isCollidingRight()) {
+					this.setX(Double.valueOf(this.getX() / Globals.tilesize).intValue() * Globals.tilesize + this.getWidth());
+					currentlyBlocked = true;
+				} else if (this.isCollidingLeft()) {
+					this.setX(Double.valueOf(this.getX() / Globals.tilesize).intValue() * Globals.tilesize + Globals.tilesize);
+					currentlyBlocked = true;
+				}
+
+				if (this.isCollidingUp()) {
+					this.jumping = false;
+					this.currentVerticalVelocity = 0;
+					this.setY(Double.valueOf(this.getY() / Globals.tilesize).intValue() * Globals.tilesize);
+					currentlyBlocked = true;
+				}
+
+				if (this.standing) {
+					this.standingTime += Gdx.graphics.getDeltaTime();
+				} else {
+					this.standingTime = 0f;
+				}
+
+				this.checkEntityCollision();
+				if (currentlyBlocked) {
+					this.blocked = true;
+				} else {
+					this.blocked = false;
+				}
 			}
 		}
-
-		this.tickLogic();
-
-		if (this.isCollidingRight()) {
-			this.setX(Double.valueOf(this.getX() / Globals.tilesize).intValue() * Globals.tilesize + this.getWidth());
-		} else if (this.isCollidingLeft()) {
-			this.setX(Double.valueOf(this.getX() / Globals.tilesize).intValue() * Globals.tilesize + Globals.tilesize);
+		if (this.currentHorizontalVelocity != 0) {
+			this.animationTime += Gdx.graphics.getDeltaTime();
+		}
+		if (this.animationTime >= 0.1f) {
+			this.changeTextureRegion();
+			this.animationTime = 0;
 		}
 
-		if (this.isCollidingUp()) {
-			this.jumping = false;
-			this.currentVerticalVelocity = 0;
-			this.setY(Double.valueOf(this.getY() / Globals.tilesize).intValue() * Globals.tilesize);
-		}
-
-		if (this.standing) {
-			this.standingTime += Gdx.graphics.getDeltaTime();
-		} else {
-			this.standingTime = 0f;
-		}
-
-		this.checkEntityCollision();
 	}
 
 	protected void tickLogic() {

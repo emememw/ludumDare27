@@ -21,9 +21,7 @@ public class GdxGame implements ApplicationListener {
 		TextureManager.getInstance().addTextureSheet("sprites", "/sprites.png", 16);
 		FontManager.getInstance().addFont("ps2", "ps2");
 		this.batch = new SpriteBatch();
-
 		GameStateManager.getInstance().startGame();
-
 	}
 
 	@Override

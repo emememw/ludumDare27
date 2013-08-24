@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 import com.markuswi.ld27.Globals;
+import com.markuswi.ld27.map.MapManager;
 
 public class Shot extends Rectangle {
 
@@ -15,9 +16,14 @@ public class Shot extends Rectangle {
 		this.x = startX;
 		this.y = startY;
 		this.setHeight(Globals.tilesize / 4);
-		this.setWidth(Globals.tilesize);
+		this.setWidth(Globals.tilesize / 4);
 		this.sourceEntity = sourceEntity;
 		this.horizontalVelocity = horizontalVelocity;
+		if (horizontalVelocity > 0) {
+			this.setX(this.getX() + sourceEntity.getWidth());
+		} else {
+			this.setX(this.getX() - this.getWidth());
+		}
 	}
 
 	public void render(SpriteBatch batch) {
@@ -28,6 +34,16 @@ public class Shot extends Rectangle {
 	public void tick() {
 
 		this.x += this.horizontalVelocity * Gdx.graphics.getDeltaTime();
+
+		if (this.getX() / Globals.tilesize > MapManager.getInstance().getCurrentGameMap().getTiles().length - 1
+				|| this.getX() / Globals.tilesize < 0
+				&& this.getY() / Globals.tilesize > MapManager.getInstance().getCurrentGameMap().getTiles()[0].length - 1
+				|| this.getY() / Globals.tilesize < 0
+				|| (MapManager.getInstance().getCurrentGameMap().getTiles()[(int) this.getX() / Globals.tilesize][(int) this.getY() / Globals.tilesize] != null && !MapManager
+						.getInstance().getCurrentGameMap().getTiles()[(int) this.getX() / Globals.tilesize][(int) this.getY() / Globals.tilesize]
+						.isAccessible())) {
+			EntityManager.getInstance().getShots().removeValue(this, true);
+		}
 
 		if (this.sourceEntity instanceof Player) {
 			for (Entity entity : EntityManager.getInstance().getEntites()) {

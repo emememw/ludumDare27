@@ -14,9 +14,17 @@ public class GameStateManager {
 	private GameStateManager() {
 	}
 
-	public void startGame() {
+	public void nextLevel() {
 		UiManager.getInstance().resetTimer();
-		MapManager.getInstance().loadMap("map2.png");
+		MapManager.getInstance().loadNextMap();
 		EntityManager.getInstance().getPlayer().updateCamera();
 	}
+
+	public void startGame() {
+		MapManager.getInstance().init();
+		UiManager.getInstance().resetTimer();
+		MapManager.getInstance().loadNextMap();
+		EntityManager.getInstance().getPlayer().updateCamera();
+	}
+
 }
