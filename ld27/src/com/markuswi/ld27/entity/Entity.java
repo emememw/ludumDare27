@@ -2,6 +2,8 @@ package com.markuswi.ld27.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 import com.markuswi.ld27.Globals;
@@ -12,17 +14,19 @@ public class Entity extends Sprite {
 
 	private float currentHorizontalVelocity = 0f;
 	private float currentVerticalVelocity = 0f;
-	private float maxFallVelocity = 400f;
-	private float fallVelocityStep = 90f;
-	private float maxJumpVelocity = 785f;
-	private float jumpVelocityStep = 50f;
+	private float maxFallVelocity = 800f;
+	private float fallVelocityStep = 180f;
+	private float maxJumpVelocity = 1570f;
+	private float jumpVelocityStep = 100f;
 	private boolean jumping;
 	boolean standing;
 	private float standingTime = 0;
+	protected float speed = 550f;
+	private TextureRegion sprite;
 
 	public Entity(int startGridX, int startGridY) {
-		this.setRegion(TextureManager.getInstance().getTextureSheets().get("sprites").getTextureRegions()[0][0]);
-		this.setSize(Globals.tilesize, Globals.tilesize);
+		this.sprite = TextureManager.getInstance().getTextureSheets().get("sprites").getTextureRegions()[0][0];
+		this.setSize(Globals.tilesize / 2, Globals.tilesize);
 		this.setX(startGridX * Globals.tilesize);
 		this.setY(startGridY * Globals.tilesize);
 	}
@@ -38,7 +42,7 @@ public class Entity extends Sprite {
 	protected Array<Tile> getTilesDown() {
 		Array<Tile> tiles = new Array<Tile>();
 		int gridXLeft = (int) this.getX() / Globals.tilesize;
-		int gridXRight = (int) (this.getX() + Globals.tilesize - 2) / Globals.tilesize;
+		int gridXRight = (int) (this.getX() + (int) this.getWidth() - 1) / Globals.tilesize;
 		int gridY = (int) (this.getY() - Globals.tilesize / 2) / Globals.tilesize;
 		if (MapManager.getInstance().getCurrentGameMap().getTiles()[gridXLeft][gridY] != null) {
 			tiles.add(MapManager.getInstance().getCurrentGameMap().getTiles()[gridXLeft][gridY]);
@@ -67,7 +71,7 @@ public class Entity extends Sprite {
 		Array<Tile> tiles = new Array<Tile>();
 		int gridYUp = (int) (this.getY()) / Globals.tilesize;
 		int gridYDown = (int) (this.getY() + Globals.tilesize / 2) / Globals.tilesize;
-		int gridX = (int) (this.getX() + Globals.tilesize) / Globals.tilesize;
+		int gridX = (int) (this.getX() + (int) this.getWidth()) / Globals.tilesize;
 		if (MapManager.getInstance().getCurrentGameMap().getTiles()[gridX][gridYUp] != null) {
 			tiles.add(MapManager.getInstance().getCurrentGameMap().getTiles()[gridX][gridYUp]);
 		}
@@ -80,7 +84,7 @@ public class Entity extends Sprite {
 	protected Array<Tile> getTilesUp() {
 		Array<Tile> tiles = new Array<Tile>();
 		int gridXLeft = (int) this.getX() / Globals.tilesize;
-		int gridXRight = (int) (this.getX() + Globals.tilesize - 1) / Globals.tilesize;
+		int gridXRight = (int) (this.getX() + (int) this.getWidth() - 1) / Globals.tilesize;
 		int gridY = (int) (this.getY() + Globals.tilesize) / Globals.tilesize;
 		if (MapManager.getInstance().getCurrentGameMap().getTiles()[gridXLeft][gridY] != null) {
 			tiles.add(MapManager.getInstance().getCurrentGameMap().getTiles()[gridXLeft][gridY]);
@@ -148,6 +152,10 @@ public class Entity extends Sprite {
 		this.currentVerticalVelocity = velocity;
 	}
 
+	public void render(SpriteBatch batch) {
+		batch.draw(this.sprite, this.getX() - Globals.tilesize / 4, this.getY(), Globals.tilesize, Globals.tilesize);
+	}
+
 	public void tick() {
 		this.currentHorizontalVelocity = 0;
 		Array<Tile> tilesBelow = this.getTilesDown();
@@ -176,7 +184,7 @@ public class Entity extends Sprite {
 		this.tickLogic();
 
 		if (this.isCollidingRight()) {
-			this.setX(Double.valueOf(this.getX() / Globals.tilesize).intValue() * Globals.tilesize);
+			this.setX(Double.valueOf(this.getX() / Globals.tilesize).intValue() * Globals.tilesize + this.getWidth());
 		} else if (this.isCollidingLeft()) {
 			this.setX(Double.valueOf(this.getX() / Globals.tilesize).intValue() * Globals.tilesize + Globals.tilesize);
 		}

@@ -28,9 +28,9 @@ public class EntityManager {
 	}
 
 	public void render(SpriteBatch batch) {
-		this.player.draw(batch);
+		this.player.render(batch);
 		for (Entity entity : this.entites) {
-			entity.draw(batch);
+			entity.render(batch);
 		}
 	}
 

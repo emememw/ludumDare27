@@ -6,7 +6,7 @@ import com.markuswi.gdxessentials.gfx.camera.CameraManager;
 
 public class Player extends Entity {
 
-	private float speed = 350f;
+	private boolean jumpButtonPressed;
 
 	public Player(int startGridX, int startGridY) {
 		super(startGridX, startGridY);
@@ -25,8 +25,11 @@ public class Player extends Entity {
 		} else if (Gdx.input.isKeyPressed(Keys.LEFT)) {
 			this.moveHorizontal(-this.speed);
 		}
-		if (Gdx.input.isKeyPressed(Keys.UP)) {
+		if (Gdx.input.isKeyPressed(Keys.UP) && !this.jumpButtonPressed) {
+			this.jumpButtonPressed = true;
 			this.jump();
+		} else if (!Gdx.input.isKeyPressed(Keys.UP)) {
+			this.jumpButtonPressed = false;
 		}
 	}
 
