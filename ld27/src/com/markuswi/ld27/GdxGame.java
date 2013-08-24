@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.markuswi.gdxessentials.gfx.camera.CameraManager;
+import com.markuswi.gdxessentials.gfx.font.FontManager;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 import com.markuswi.ld27.entity.EntityManager;
 import com.markuswi.ld27.map.MapManager;
@@ -18,7 +19,10 @@ public class GdxGame implements ApplicationListener {
 
 		TextureManager.getInstance().addTextureSheet("tiles", "/tiles.png", 16);
 		TextureManager.getInstance().addTextureSheet("sprites", "/sprites.png", 16);
+		FontManager.getInstance().addFont("ps2", "ps2");
 		this.batch = new SpriteBatch();
+
+		GameStateManager.getInstance().startGame();
 
 	}
 
@@ -40,9 +44,11 @@ public class GdxGame implements ApplicationListener {
 		this.batch.begin();
 		MapManager.getInstance().getCurrentGameMap().render(this.batch);
 		EntityManager.getInstance().render(this.batch);
+		UiManager.getInstance().render(this.batch);
 		this.batch.end();
 
 		EntityManager.getInstance().tick();
+		UiManager.getInstance().tick();
 	}
 
 	@Override

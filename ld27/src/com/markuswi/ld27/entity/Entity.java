@@ -14,10 +14,10 @@ public class Entity extends Sprite {
 
 	private float currentHorizontalVelocity = 0f;
 	private float currentVerticalVelocity = 0f;
-	private float maxFallVelocity = 800f;
-	private float fallVelocityStep = 180f;
-	private float maxJumpVelocity = 1570f;
-	private float jumpVelocityStep = 100f;
+	private float maxFallVelocity = 2000f;
+	private float fallVelocityStep = 110f;
+	private float maxJumpVelocity = 1550f;
+	private float jumpVelocityStep = 80f;
 	private boolean jumping;
 	boolean standing;
 	private float standingTime = 0;
@@ -167,6 +167,10 @@ public class Entity extends Sprite {
 		this.currentVerticalVelocity = velocity;
 	}
 
+	public void onDeath() {
+		System.out.println("dead");
+	}
+
 	public void render(SpriteBatch batch) {
 		batch.draw(this.sprite, this.getX() - Globals.tilesize / 4, this.getY(), Globals.tilesize, Globals.tilesize);
 	}
@@ -174,6 +178,11 @@ public class Entity extends Sprite {
 	public void tick() {
 		this.currentHorizontalVelocity = 0;
 		Array<Tile> tilesBelow = this.getTilesDown();
+		for (Tile tile : tilesBelow) {
+			if (tile.isDeadly()) {
+				this.onDeath();
+			}
+		}
 
 		if (this.jumping) {
 			if (this.standing) {
@@ -207,7 +216,7 @@ public class Entity extends Sprite {
 
 		if (this.isCollidingUp()) {
 			this.jumping = false;
-			this.currentHorizontalVelocity = 0;
+			this.currentVerticalVelocity = 0;
 			this.setY(Double.valueOf(this.getY() / Globals.tilesize).intValue() * Globals.tilesize);
 		}
 

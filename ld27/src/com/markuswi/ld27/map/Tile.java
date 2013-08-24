@@ -5,16 +5,18 @@ import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 
 public enum Tile {
 
-	TEST(false, 0, 0), DOOR(true, 1, 0);
+	TEST(false, false, 0, 0), DOOR(true, false, 1, 0), LAVA(true, true, 2, 0);
 
 	private int textureRegionX;
 	private int textureRegionY;
 	private boolean accessible;
+	private boolean deadly;
 
-	private Tile(boolean accessible, int textureRegionX, int textureRegionY) {
+	private Tile(boolean accessible, boolean deadly, int textureRegionX, int textureRegionY) {
 		this.textureRegionX = textureRegionX;
 		this.textureRegionY = textureRegionY;
 		this.accessible = accessible;
+		this.deadly = deadly;
 	}
 
 	public TextureRegion getTextureRegion() {
@@ -31,6 +33,10 @@ public enum Tile {
 
 	public boolean isAccessible() {
 		return this.accessible;
+	}
+
+	public boolean isDeadly() {
+		return this.deadly;
 	}
 
 }

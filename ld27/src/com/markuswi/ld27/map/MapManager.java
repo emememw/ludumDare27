@@ -1,6 +1,9 @@
 package com.markuswi.ld27.map;
 
 import com.markuswi.gdxessentials.gfx.texture.ImageProcessor;
+import com.markuswi.ld27.entity.Entity;
+import com.markuswi.ld27.entity.EntityManager;
+import com.markuswi.ld27.entity.Player;
 
 public class MapManager {
 
@@ -13,14 +16,14 @@ public class MapManager {
 	public GameMap currentGameMap;
 
 	private MapManager() {
-		this.currentGameMap = this.loadMap("map1.png");
+		// this.currentGameMap = this.loadMap("map2.png");
 	}
 
 	public GameMap getCurrentGameMap() {
 		return this.currentGameMap;
 	}
 
-	public GameMap loadMap(String filename) {
+	public void loadMap(String filename) {
 
 		String[][] pixels = ImageProcessor.getPixelsFromImage("maps/" + filename);
 		Tile[][] tiles = new Tile[pixels.length][pixels[0].length];
@@ -30,12 +33,17 @@ public class MapManager {
 					tiles[x][pixels[x].length - 1 - y] = Tile.TEST;
 				} else if (pixels[x][y].startsWith("0000ff")) {
 					tiles[x][pixels[x].length - 1 - y] = Tile.DOOR;
+				} else if (pixels[x][y].startsWith("ff0000")) {
+					tiles[x][pixels[x].length - 1 - y] = Tile.LAVA;
 				}
 			}
 		}
 		GameMap gameMap = new GameMap(tiles.length, tiles[0].length);
 		gameMap.setTiles(tiles);
-		return gameMap;
+		EntityManager.getInstance().getEntites().clear();
+		EntityManager.getInstance().getEntites().add(new Entity(2, 1));
+		EntityManager.getInstance().setPlayer(new Player(1, 2));
+		this.currentGameMap = gameMap;
 	}
 
 	public void setCurrentGameMap(GameMap currentGameMap) {
