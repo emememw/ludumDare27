@@ -27,7 +27,9 @@ public class MapManager {
 		for (int x = 0; x < pixels.length; x++) {
 			for (int y = 0; y < pixels[x].length; y++) {
 				if (pixels[x][y].startsWith("000000")) {
-					tiles[x][pixels[x].length - 1 - y] = TileType.TEST.getTile();
+					tiles[x][pixels[x].length - 1 - y] = Tile.TEST;
+				} else if (pixels[x][y].startsWith("0000ff")) {
+					tiles[x][pixels[x].length - 1 - y] = Tile.DOOR;
 				}
 			}
 		}

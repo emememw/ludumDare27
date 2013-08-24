@@ -3,16 +3,18 @@ package com.markuswi.ld27.map;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 
-public class Tile {
+public enum Tile {
 
-	private boolean accessible;
+	TEST(false, 0, 0), DOOR(true, 1, 0);
+
 	private int textureRegionX;
 	private int textureRegionY;
+	private boolean accessible;
 
-	public Tile(boolean accessible, int textureRegionX, int textureRegionY) {
-		this.accessible = accessible;
+	private Tile(boolean accessible, int textureRegionX, int textureRegionY) {
 		this.textureRegionX = textureRegionX;
 		this.textureRegionY = textureRegionY;
+		this.accessible = accessible;
 	}
 
 	public TextureRegion getTextureRegion() {
@@ -29,18 +31,6 @@ public class Tile {
 
 	public boolean isAccessible() {
 		return this.accessible;
-	}
-
-	public void setAccessible(boolean accessible) {
-		this.accessible = accessible;
-	}
-
-	public void setTextureRegionX(int textureRegionX) {
-		this.textureRegionX = textureRegionX;
-	}
-
-	public void setTextureRegionY(int textureRegionY) {
-		this.textureRegionY = textureRegionY;
 	}
 
 }

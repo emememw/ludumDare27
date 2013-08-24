@@ -31,6 +31,21 @@ public class Entity extends Sprite {
 		this.setY(startGridY * Globals.tilesize);
 	}
 
+	private void checkEntityCollision() {
+		if (this instanceof Player) {
+			for (Entity entity : EntityManager.getInstance().getEntites()) {
+				if (this.getBoundingRectangle().overlaps(entity.getBoundingRectangle())) {
+					System.out.println("colliding with entity");
+				}
+			}
+		} else {
+			if (this.getBoundingRectangle().overlaps(EntityManager.getInstance().getPlayer().getBoundingRectangle())) {
+				System.out.println("colliding with player");
+			}
+		}
+
+	}
+
 	protected void fall() {
 		if (this.currentVerticalVelocity - this.fallVelocityStep < -this.maxFallVelocity) {
 			this.moveVertical(-this.maxFallVelocity);
@@ -159,6 +174,7 @@ public class Entity extends Sprite {
 	public void tick() {
 		this.currentHorizontalVelocity = 0;
 		Array<Tile> tilesBelow = this.getTilesDown();
+
 		if (this.jumping) {
 			if (this.standing) {
 				this.currentVerticalVelocity = this.maxJumpVelocity;
@@ -201,6 +217,7 @@ public class Entity extends Sprite {
 			this.standingTime = 0f;
 		}
 
+		this.checkEntityCollision();
 	}
 
 	protected void tickLogic() {
