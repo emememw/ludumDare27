@@ -2,12 +2,15 @@ package com.markuswi.ld27;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.bitfire.postprocessing.PostProcessor;
 import com.bitfire.postprocessing.effects.CrtMonitor;
 import com.bitfire.postprocessing.effects.Vignette;
 import com.bitfire.utils.ShaderLoader;
+import com.markuswi.gdxessentials.audio.AudioManager;
 import com.markuswi.gdxessentials.gfx.camera.CameraManager;
 import com.markuswi.gdxessentials.gfx.font.FontManager;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
@@ -27,9 +30,14 @@ public class GdxGame implements ApplicationListener {
 
 		TextureManager.getInstance().addTextureSheet("tiles", "/tiles.png", 16);
 		TextureManager.getInstance().addTextureSheet("sprites", "/sprites.png", 16);
+		AudioManager.getInstance().addSound("death", "death.wav");
+		AudioManager.getInstance().addSound("hurt", "hurt.wav");
+		AudioManager.getInstance().addSound("stonebump", "stonebump.wav");
+		AudioManager.getInstance().addSound("success", "success.wav");
+		AudioManager.getInstance().addSong("song", "song.ogg");
 		FontManager.getInstance().addFont("ps2", "ps2");
 		this.batch = new SpriteBatch();
-		GameStateManager.getInstance().startGame();
+		// GameStateManager.getInstance().startGame();
 
 		// Post processing
 		ShaderLoader.BasePath = "data/shaders/";
@@ -64,19 +72,51 @@ public class GdxGame implements ApplicationListener {
 
 		this.batch.setProjectionMatrix(CameraManager.getInstance().getCamera().combined);
 		this.batch.begin();
-		MapManager.getInstance().getCurrentGameMap().render(this.batch);
-		EntityManager.getInstance().render(this.batch);
-		EffectManager.getInstance().render(this.batch);
-		UiManager.getInstance().render(this.batch);
+		if (GameStateManager.getInstance().isShowStartScreen()) {
+			for (int x = 0; x <= Gdx.graphics.getWidth() / Globals.tilesize; x++) {
+				for (int y = 0; y <= Gdx.graphics.getWidth() / Globals.tilesize; y++) {
+					this.batch.draw(TextureManager.getInstance().getTextureSheets().get("tiles").getTextureRegions()[3][0], x * Globals.tilesize, y
+							* Globals.tilesize, Globals.tilesize, Globals.tilesize);
+				}
+			}
+
+			Vector3 vector = CameraManager.getInstance().translateToWorldCoordinates(170, 30);
+			FontManager.getInstance().getFonts().get("ps2").setScale(1f);
+			FontManager.getInstance().getFonts().get("ps2").draw(this.batch, "Castle of Doom", vector.x, vector.y);
+			Vector3 vector2 = CameraManager.getInstance().translateToWorldCoordinates(275, 80);
+			FontManager.getInstance().getFonts().get("ps2").setScale(0.5f);
+			FontManager.getInstance().getFonts().get("ps2").draw(this.batch, "Ludum Dare 27", vector2.x, vector2.y);
+			Vector3 vector3 = CameraManager.getInstance().translateToWorldCoordinates(215, 220);
+			FontManager.getInstance().getFonts().get("ps2").setScale(0.5f);
+			FontManager.getInstance().getFonts().get("ps2").draw(this.batch, "Press [SPACE] to start", vector3.x, vector3.y);
+			Vector3 vector4 = CameraManager.getInstance().translateToWorldCoordinates(305, 450);
+			FontManager.getInstance().getFonts().get("ps2").setScale(0.25f);
+			FontManager.getInstance().getFonts().get("ps2").draw(this.batch, "August 2013 - emveyh", vector4.x, vector4.y);
+
+			if (Gdx.input.isKeyPressed(Keys.SPACE)) {
+				GameStateManager.getInstance().setShowStartScreen(false);
+				GameStateManager.getInstance().startGame();
+			}
+
+		} else if (GameStateManager.getInstance().isShowEndScreen()) {
+
+		} else {
+			MapManager.getInstance().getCurrentGameMap().render(this.batch);
+			EntityManager.getInstance().render(this.batch);
+			EffectManager.getInstance().render(this.batch);
+			UiManager.getInstance().render(this.batch);
+		}
 
 		this.batch.end();
 
 		this.postProcessor.render();
 
-		EntityManager.getInstance().tick();
-		UiManager.getInstance().tick();
-		EffectManager.getInstance().tick();
-		CameraManager.getInstance().getCamera().update();
+		if (!GameStateManager.getInstance().isShowStartScreen() && !GameStateManager.getInstance().isShowEndScreen()) {
+			EntityManager.getInstance().tick();
+			UiManager.getInstance().tick();
+			EffectManager.getInstance().tick();
+			CameraManager.getInstance().getCamera().update();
+		}
 
 	}
 

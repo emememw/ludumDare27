@@ -3,6 +3,7 @@ package com.markuswi.ld27.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.markuswi.gdxessentials.audio.AudioManager;
 import com.markuswi.gdxessentials.gfx.camera.CameraManager;
 import com.markuswi.ld27.Direction;
 import com.markuswi.ld27.GameStateManager;
@@ -35,6 +36,7 @@ public class Player extends Entity {
 			System.out.println("dead " + this);
 			this.dead = true;
 			EffectManager.getInstance().getEffects().add(new PlayerDeathEffect());
+
 		}
 	}
 
@@ -48,6 +50,7 @@ public class Player extends Entity {
 			this.hitTime = 0.1f;
 			this.recoveryTime = 1f;
 			this.currentDirection = sourceEntity.getCurrentDirection();
+			AudioManager.getInstance().getSounds().get("hurt").play();
 		}
 	}
 

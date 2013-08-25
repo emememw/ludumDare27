@@ -3,6 +3,7 @@ package com.markuswi.ld27.entity.enemy;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.markuswi.gdxessentials.audio.AudioManager;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 import com.markuswi.ld27.Direction;
 import com.markuswi.ld27.Globals;
@@ -35,7 +36,11 @@ public class BasicEnemy extends Entity {
 		int absY = (int) (EntityManager.getInstance().getPlayer().getY() / Globals.tilesize - this.getY() / Globals.tilesize);
 		int absX = (int) Math.abs(EntityManager.getInstance().getPlayer().getX() - this.getX()) / Globals.tilesize;
 		if (absY >= -3 && absY <= 0 && absX <= 0) {
+			if (!this.actionFlag) {
+				AudioManager.getInstance().getSounds().get("stonebump").play();
+			}
 			this.actionFlag = true;
+
 		} else if (!this.actionFlag) {
 			this.setY(this.startY);
 

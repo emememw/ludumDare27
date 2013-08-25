@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.markuswi.gdxessentials.gfx.texture.ImageProcessor;
 import com.markuswi.ld27.entity.EntityManager;
 import com.markuswi.ld27.entity.Player;
@@ -20,8 +21,7 @@ public class MapManager {
 	}
 
 	public GameMap currentGameMap;
-	private List<GameMapData> availableMaps = new LinkedList<GameMapData>();
-	private GameMapData currentGameMapData;
+	private List<String> availableMaps = new LinkedList<String>();
 
 	private MapManager() {
 
@@ -31,14 +31,12 @@ public class MapManager {
 		return this.currentGameMap;
 	}
 
-	public GameMapData getCurrentMapData() {
-		return this.currentGameMapData;
-	}
-
 	public void init() {
-		this.availableMaps = new LinkedList<GameMapData>();
-		for (GameMapData gameMapData : GameMapData.values()) {
-			this.availableMaps.add(gameMapData);
+		this.availableMaps = new LinkedList<String>();
+		for (int i = 0; i < 100; i++) {
+			if (Gdx.files.internal("data/maps/map" + i + ".png").exists()) {
+				this.availableMaps.add("map" + i + ".png");
+			}
 		}
 		Collections.shuffle(this.availableMaps);
 	}
@@ -75,8 +73,7 @@ public class MapManager {
 
 	public void loadNextMap() {
 
-		String filename = this.availableMaps.get(0).getFilename();
-		this.currentGameMapData = this.availableMaps.get(0);
+		String filename = this.availableMaps.get(0);
 		this.availableMaps.remove(0);
 
 		System.out.println(this.availableMaps.size());

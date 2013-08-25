@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.markuswi.gdxessentials.audio.AudioManager;
 import com.markuswi.gdxessentials.gfx.camera.CameraManager;
 import com.markuswi.gdxessentials.gfx.font.FontManager;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
@@ -32,9 +33,12 @@ public class PlayerDeathEffect extends Effect {
 
 	@Override
 	void tick() {
-
+		AudioManager.getInstance().getSongs().get("song").stop();
 		this.animationTime += Gdx.graphics.getDeltaTime();
 		if (this.animationTime > 0.07f && this.state < 5) {
+			if (this.state == 1) {
+				AudioManager.getInstance().getSounds().get("death").play();
+			}
 			this.animationTime = 0;
 			this.state++;
 		} else if (this.animationTime > 0.5f) {

@@ -32,9 +32,9 @@ public class UiManager {
 			FontManager.getInstance().getFonts().get("ps2").setScale(2f);
 			FontManager.getInstance().getFonts().get("ps2").draw(batch, this.decimalFormat.format(this.secondTimer), timerVector.x, timerVector.y);
 			//
-			Vector3 levelVector = CameraManager.getInstance().translateToWorldCoordinates(80, 30);
+			Vector3 levelVector = CameraManager.getInstance().translateToWorldCoordinates(30, 430);
 			FontManager.getInstance().getFonts().get("ps2").setColor(Color.WHITE);
-			FontManager.getInstance().getFonts().get("ps2").setScale(0.5f);
+			FontManager.getInstance().getFonts().get("ps2").setScale(1f);
 			FontManager.getInstance().getFonts().get("ps2")
 					.draw(batch, "LEVEL " + GameStateManager.getInstance().getCurrentLevel(), levelVector.x, levelVector.y);
 		}
