@@ -5,9 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.markuswi.gdxessentials.gfx.texture.ImageProcessor;
-import com.markuswi.ld27.entity.BasicEnemy;
 import com.markuswi.ld27.entity.EntityManager;
 import com.markuswi.ld27.entity.Player;
+import com.markuswi.ld27.entity.enemy.Chaser;
+import com.markuswi.ld27.entity.enemy.FallingBlock;
+import com.markuswi.ld27.entity.enemy.Patroler;
 
 public class MapManager {
 
@@ -55,7 +57,11 @@ public class MapManager {
 				} else if (pixels[x][y].startsWith("ff0000")) {
 					tiles[x][pixels[x].length - 1 - y] = Tile.LAVA;
 				} else if (pixels[x][y].startsWith("ff00ff")) {
-					EntityManager.getInstance().getEntites().add(new BasicEnemy(x, pixels[x].length - 1 - y));
+					EntityManager.getInstance().getEntites().add(new FallingBlock(x, pixels[x].length - 1 - y));
+				} else if (pixels[x][y].startsWith("ffde00")) {
+					EntityManager.getInstance().getEntites().add(new Chaser(x, pixels[x].length - 1 - y));
+				} else if (pixels[x][y].startsWith("00ff96")) {
+					EntityManager.getInstance().getEntites().add(new Patroler(x, pixels[x].length - 1 - y));
 				} else if (pixels[x][y].startsWith("00ff00")) {
 					EntityManager.getInstance().setPlayer(new Player(x, pixels[x].length - 1 - y));
 				}

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 import com.markuswi.ld27.Direction;
@@ -96,6 +97,10 @@ public class Entity extends Sprite {
 		}
 	}
 
+	public float getAnimationTime() {
+		return this.animationTime;
+	}
+
 	public Direction getCurrentDirection() {
 		return this.currentDirection;
 	}
@@ -138,6 +143,22 @@ public class Entity extends Sprite {
 
 	public float getStandingTime() {
 		return this.standingTime;
+	}
+
+	public float getStartX() {
+		return this.startX;
+	}
+
+	public float getStartY() {
+		return this.startY;
+	}
+
+	public TextureRegion getTextureRegion1() {
+		return this.textureRegion1;
+	}
+
+	public TextureRegion getTextureRegion2() {
+		return this.textureRegion2;
 	}
 
 	protected Array<Tile> getTilesDown() {
@@ -196,8 +217,16 @@ public class Entity extends Sprite {
 		return tiles;
 	}
 
+	public boolean isAnimationFlag() {
+		return this.animationFlag;
+	}
+
 	public boolean isBlocked() {
 		return this.blocked;
+	}
+
+	public boolean isCanFall() {
+		return this.canFall;
 	}
 
 	private boolean isCollidingLeft() {
@@ -231,6 +260,10 @@ public class Entity extends Sprite {
 			}
 		}
 		return collision;
+	}
+
+	public boolean isDead() {
+		return this.dead;
 	}
 
 	public boolean isJumping() {
@@ -295,37 +328,50 @@ public class Entity extends Sprite {
 
 	public void tick() {
 
-		this.currentHorizontalVelocity = 0;
 		Array<Tile> tilesBelow = this.getTilesDown();
-		for (Tile tile : tilesBelow) {
-			if (tile.isDeadly()) {
-				this.onDeath();
+		if (!this.dead) {
+			this.currentHorizontalVelocity = 0;
+
+			for (Tile tile : tilesBelow) {
+				if (tile.isDeadly()) {
+					outer: for (int x = 0; x < MapManager.getInstance().getCurrentGameMap().getTiles().length; x++) {
+						for (int y = 0; y < MapManager.getInstance().getCurrentGameMap().getTiles()[x].length; y++) {
+							if (MapManager.getInstance().getCurrentGameMap().getTiles()[x][y] != null
+									&& MapManager.getInstance().getCurrentGameMap().getTiles()[x][y].isDeadly())
+								if (new Rectangle(x * Globals.tilesize, y * Globals.tilesize, Globals.tilesize, Globals.tilesize - 10).overlaps(this
+										.getBoundingRectangle())) {
+									this.onDeath();
+									break outer;
+								}
+						}
+					}
+
+				}
+			}
+		}
+
+		if (this.jumping && !this.dead) {
+			if (this.standing) {
+				this.currentVerticalVelocity = this.maxJumpVelocity;
+			}
+			this.jumpMove();
+		}
+
+		this.standing = false;
+		if (!this.jumping && this.canFall || this.dead) {
+			for (Tile tile : tilesBelow) {
+				if (!tile.isAccessible()) {
+					this.standing = true;
+					this.setY(Double.valueOf(this.getY() / Globals.tilesize).intValue() * Globals.tilesize);
+					this.currentVerticalVelocity = 0;
+					break;
+				}
+			}
+			if (!this.standing) {
+				this.fall();
 			}
 		}
 		if (!this.dead) {
-
-			if (this.jumping) {
-				if (this.standing) {
-					this.currentVerticalVelocity = this.maxJumpVelocity;
-				}
-				this.jumpMove();
-			}
-
-			this.standing = false;
-			if (!this.jumping && this.canFall) {
-				for (Tile tile : tilesBelow) {
-					if (!tile.isAccessible()) {
-						this.standing = true;
-						this.setY(Double.valueOf(this.getY() / Globals.tilesize).intValue() * Globals.tilesize);
-						this.currentVerticalVelocity = 0;
-						break;
-					}
-				}
-				if (!this.standing) {
-					this.fall();
-				}
-			}
-
 			this.tickLogic();
 			if (!this.dead) {
 

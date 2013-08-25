@@ -1,4 +1,4 @@
-package com.markuswi.ld27.entity;
+package com.markuswi.ld27.entity.enemy;
 
 import java.util.Random;
 
@@ -6,6 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.markuswi.gdxessentials.gfx.texture.TextureManager;
 import com.markuswi.ld27.Direction;
 import com.markuswi.ld27.Globals;
+import com.markuswi.ld27.entity.Entity;
+import com.markuswi.ld27.entity.EntityManager;
 import com.markuswi.ld27.map.MapManager;
 
 public class BasicEnemy extends Entity {

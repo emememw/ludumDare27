@@ -1,4 +1,4 @@
-package com.markuswi.ld27;
+package com.markuswi.ld27.ui;
 
 import java.text.DecimalFormat;
 
@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.markuswi.gdxessentials.gfx.camera.CameraManager;
 import com.markuswi.gdxessentials.gfx.font.FontManager;
+import com.markuswi.ld27.GameStateManager;
 import com.markuswi.ld27.entity.EntityManager;
 
 public class UiManager {
@@ -25,10 +26,19 @@ public class UiManager {
 	}
 
 	public void render(SpriteBatch batch) {
-		Vector3 timerVector = CameraManager.getInstance().translateToWorldCoordinates(340, 10);
-		FontManager.getInstance().getFonts().get("ps2").setColor(Color.WHITE);
-		FontManager.getInstance().getFonts().get("ps2").setScale(1f);
-		FontManager.getInstance().getFonts().get("ps2").draw(batch, this.decimalFormat.format(this.secondTimer), timerVector.x, timerVector.y);
+		if (!EntityManager.getInstance().getPlayer().isDead()) {
+			Vector3 timerVector = CameraManager.getInstance().translateToWorldCoordinates(260, 10);
+			FontManager.getInstance().getFonts().get("ps2").setColor(Color.WHITE);
+			FontManager.getInstance().getFonts().get("ps2").setScale(2f);
+			FontManager.getInstance().getFonts().get("ps2").draw(batch, this.decimalFormat.format(this.secondTimer), timerVector.x, timerVector.y);
+			//
+			Vector3 levelVector = CameraManager.getInstance().translateToWorldCoordinates(80, 30);
+			FontManager.getInstance().getFonts().get("ps2").setColor(Color.WHITE);
+			FontManager.getInstance().getFonts().get("ps2").setScale(0.5f);
+			FontManager.getInstance().getFonts().get("ps2")
+					.draw(batch, "LEVEL " + GameStateManager.getInstance().getCurrentLevel(), levelVector.x, levelVector.y);
+		}
+
 	}
 
 	public void resetTimer() {

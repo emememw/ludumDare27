@@ -7,6 +7,8 @@ import com.markuswi.gdxessentials.gfx.camera.CameraManager;
 import com.markuswi.ld27.Direction;
 import com.markuswi.ld27.GameStateManager;
 import com.markuswi.ld27.Globals;
+import com.markuswi.ld27.effects.EffectManager;
+import com.markuswi.ld27.effects.PlayerDeathEffect;
 import com.markuswi.ld27.map.MapManager;
 import com.markuswi.ld27.map.Tile;
 
@@ -29,9 +31,11 @@ public class Player extends Entity {
 
 	@Override
 	public void onDeath() {
-		System.out.println("dead " + this);
-		this.dead = true;
-		GameStateManager.getInstance().startGame();
+		if (!this.dead) {
+			System.out.println("dead " + this);
+			this.dead = true;
+			EffectManager.getInstance().getEffects().add(new PlayerDeathEffect());
+		}
 	}
 
 	@Override
@@ -41,7 +45,7 @@ public class Player extends Entity {
 
 	public void playerHit(Entity sourceEntity) {
 		if (this.hitTime <= 0 && this.recoveryTime <= 0) {
-			this.hitTime = 0.05f;
+			this.hitTime = 0.1f;
 			this.recoveryTime = 1f;
 			this.currentDirection = sourceEntity.getCurrentDirection();
 		}
@@ -49,7 +53,7 @@ public class Player extends Entity {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		if (this.recoveryTime <= 0 || this.recoveryTime % 0.1f > 0.05f) {
+		if (!this.dead && (this.recoveryTime <= 0 || this.recoveryTime % 0.1f > 0.05f)) {
 			super.render(batch);
 		}
 	}
@@ -92,8 +96,12 @@ public class Player extends Entity {
 				// this.getY(), 1000f, this));
 				this.fireButtonPressedTime += Gdx.graphics.getDeltaTime();
 			} else if (!Gdx.input.isKeyPressed(Keys.X) && this.fireButtonPressedTime > 0) {
-				EntityManager.getInstance().getShots()
-						.add(new Shot(this.getX(), this.getY() + this.getHeight() / 2, this.currentDirection == Direction.RIGHT ? 1000f : -1000f, this));
+				/*
+				 * EntityManager.getInstance().getShots() .add(new
+				 * Shot(this.getX(), this.getY() + this.getHeight() / 2,
+				 * this.currentDirection == Direction.RIGHT ? 1000f : -1000f,
+				 * this));
+				 */
 				this.fireButtonPressedTime = 0;
 			}
 
@@ -122,7 +130,6 @@ public class Player extends Entity {
 			CameraManager.getInstance().getCamera().position.y = CameraManager.getInstance().getCamera().viewportHeight / 2
 					+ (this.getY() - CameraManager.getInstance().getCamera().viewportHeight / 2);
 		}
-		CameraManager.getInstance().getCamera().update();
 
 	}
 }
