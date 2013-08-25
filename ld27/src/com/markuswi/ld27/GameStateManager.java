@@ -51,6 +51,7 @@ public class GameStateManager {
 	}
 
 	public void startGame() {
+		AudioManager.getInstance().getSounds().get("start").play();
 		this.currentLevel = 1;
 		EffectManager.getInstance().resetEffects();
 		MapManager.getInstance().init();

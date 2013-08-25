@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.markuswi.gdxessentials.gfx.texture.ImageProcessor;
+import com.markuswi.ld27.GameStateManager;
 import com.markuswi.ld27.entity.EntityManager;
 import com.markuswi.ld27.entity.Player;
 import com.markuswi.ld27.entity.enemy.Chaser;
@@ -73,12 +74,16 @@ public class MapManager {
 
 	public void loadNextMap() {
 
-		String filename = this.availableMaps.get(0);
-		this.availableMaps.remove(0);
+		if (this.availableMaps.isEmpty()) {
+			GameStateManager.getInstance().setShowEndScreen(true);
+		} else {
+			String filename = this.availableMaps.get(0);
+			this.availableMaps.remove(0);
 
-		System.out.println(this.availableMaps.size());
-		System.out.println("loading " + filename);
-		this.loadMap(filename);
+			System.out.println(this.availableMaps.size());
+			System.out.println("loading " + filename);
+			this.loadMap(filename);
+		}
 	}
 
 	public void setCurrentGameMap(GameMap currentGameMap) {

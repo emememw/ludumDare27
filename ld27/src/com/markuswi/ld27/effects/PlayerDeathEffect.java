@@ -26,8 +26,8 @@ public class PlayerDeathEffect extends Effect {
 		if (this.showGameOver) {
 			Vector3 vector = CameraManager.getInstance().translateToWorldCoordinates(100, 100);
 			FontManager.getInstance().getFonts().get("ps2").setScale(1f);
-			FontManager.getInstance().getFonts().get("ps2").draw(batch, "Game Over", vector.x + 170, vector.y);
-			FontManager.getInstance().getFonts().get("ps2").draw(batch, "[ Enter To Restart ]", vector.x, vector.y - 50);
+			FontManager.getInstance().getFonts().get("ps2").draw(batch, "Game Over :(", vector.x + 120, vector.y);
+			FontManager.getInstance().getFonts().get("ps2").draw(batch, "[SPACE] to restart", vector.x + 5, vector.y - 80);
 		}
 	}
 
@@ -45,7 +45,7 @@ public class PlayerDeathEffect extends Effect {
 			this.showGameOver = true;
 		}
 
-		if (this.showGameOver && Gdx.input.isKeyPressed(Keys.ENTER)) {
+		if (this.showGameOver && Gdx.input.isKeyPressed(Keys.SPACE)) {
 
 			GameStateManager.getInstance().startGame();
 		}

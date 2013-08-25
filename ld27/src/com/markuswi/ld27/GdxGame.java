@@ -34,6 +34,7 @@ public class GdxGame implements ApplicationListener {
 		AudioManager.getInstance().addSound("hurt", "hurt.wav");
 		AudioManager.getInstance().addSound("stonebump", "stonebump.wav");
 		AudioManager.getInstance().addSound("success", "success.wav");
+		AudioManager.getInstance().addSound("start", "start.wav");
 		AudioManager.getInstance().addSong("song", "song.ogg");
 		FontManager.getInstance().addFont("ps2", "ps2");
 		this.batch = new SpriteBatch();
@@ -99,6 +100,28 @@ public class GdxGame implements ApplicationListener {
 			}
 
 		} else if (GameStateManager.getInstance().isShowEndScreen()) {
+			CameraManager.getInstance().getCamera().setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			for (int x = 0; x <= Gdx.graphics.getWidth() / Globals.tilesize; x++) {
+				for (int y = 0; y <= Gdx.graphics.getWidth() / Globals.tilesize; y++) {
+					this.batch.draw(TextureManager.getInstance().getTextureSheets().get("tiles").getTextureRegions()[3][0], x * Globals.tilesize, y
+							* Globals.tilesize, Globals.tilesize, Globals.tilesize);
+				}
+			}
+			Vector3 vector = CameraManager.getInstance().translateToWorldCoordinates(150, 50);
+			FontManager.getInstance().getFonts().get("ps2").setScale(1f);
+			FontManager.getInstance().getFonts().get("ps2").draw(this.batch, "Congratulations!", vector.x, vector.y);
+			Vector3 vector3 = CameraManager.getInstance().translateToWorldCoordinates(175, 220);
+			FontManager.getInstance().getFonts().get("ps2").setScale(0.5f);
+			FontManager.getInstance().getFonts().get("ps2").draw(this.batch, "Press [SPACE] to play again", vector3.x, vector3.y);
+
+			Vector3 vector2 = CameraManager.getInstance().translateToWorldCoordinates(270, 130);
+			FontManager.getInstance().getFonts().get("ps2").setScale(1f);
+			FontManager.getInstance().getFonts().get("ps2").draw(this.batch, "You won!", vector2.x, vector2.y);
+
+			if (Gdx.input.isKeyPressed(Keys.SPACE)) {
+				GameStateManager.getInstance().setShowEndScreen(false);
+				GameStateManager.getInstance().startGame();
+			}
 
 		} else {
 			MapManager.getInstance().getCurrentGameMap().render(this.batch);
