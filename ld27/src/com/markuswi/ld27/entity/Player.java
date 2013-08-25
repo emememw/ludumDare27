@@ -48,7 +48,7 @@ public class Player extends Entity {
 	public void playerHit(Entity sourceEntity) {
 		if (this.hitTime <= 0 && this.recoveryTime <= 0) {
 			this.hitTime = 0.1f;
-			this.recoveryTime = 1f;
+			this.recoveryTime = 0.5f;
 			this.currentDirection = sourceEntity.getCurrentDirection();
 			AudioManager.getInstance().getSounds().get("hurt").play();
 		}

@@ -329,24 +329,18 @@ public class Entity extends Sprite {
 	public void tick() {
 
 		Array<Tile> tilesBelow = this.getTilesDown();
-		if (!this.dead) {
-			this.currentHorizontalVelocity = 0;
 
-			for (Tile tile : tilesBelow) {
-				if (tile.isDeadly()) {
-					outer: for (int x = 0; x < MapManager.getInstance().getCurrentGameMap().getTiles().length; x++) {
-						for (int y = 0; y < MapManager.getInstance().getCurrentGameMap().getTiles()[x].length; y++) {
-							if (MapManager.getInstance().getCurrentGameMap().getTiles()[x][y] != null
-									&& MapManager.getInstance().getCurrentGameMap().getTiles()[x][y].isDeadly())
-								if (new Rectangle(x * Globals.tilesize, y * Globals.tilesize, Globals.tilesize, Globals.tilesize - 10).overlaps(this
-										.getBoundingRectangle())) {
-									this.onDeath();
-									break outer;
-								}
-						}
+		this.currentHorizontalVelocity = 0;
+
+		outer: for (int x = 0; x < MapManager.getInstance().getCurrentGameMap().getTiles().length; x++) {
+			for (int y = 0; y < MapManager.getInstance().getCurrentGameMap().getTiles()[x].length; y++) {
+				if (MapManager.getInstance().getCurrentGameMap().getTiles()[x][y] != null
+						&& MapManager.getInstance().getCurrentGameMap().getTiles()[x][y].isDeadly())
+					if (new Rectangle(x * Globals.tilesize, y * Globals.tilesize, Globals.tilesize, Globals.tilesize - 10)
+							.overlaps(this.getBoundingRectangle())) {
+						this.onDeath();
+						break outer;
 					}
-
-				}
 			}
 		}
 

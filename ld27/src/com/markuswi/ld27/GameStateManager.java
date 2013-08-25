@@ -59,7 +59,7 @@ public class GameStateManager {
 		MapManager.getInstance().loadNextMap();
 		EntityManager.getInstance().getPlayer().updateCamera();
 		AudioManager.getInstance().getSongs().get("song").stop();
-		AudioManager.getInstance().getSongs().get("song").setVolume(0.35f);
+		AudioManager.getInstance().getSongs().get("song").setVolume(0.3f);
 		AudioManager.getInstance().getSongs().get("song").setLooping(true);
 		AudioManager.getInstance().getSongs().get("song").play();
 	}

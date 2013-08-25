@@ -3,6 +3,7 @@ package com.markuswi.ld27.map;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.markuswi.gdxessentials.gfx.texture.ImageProcessor;
@@ -23,13 +24,22 @@ public class MapManager {
 
 	public GameMap currentGameMap;
 	private List<String> availableMaps = new LinkedList<String>();
+	private int mapCount;
 
 	private MapManager() {
 
 	}
 
+	public List<String> getAvailableMaps() {
+		return this.availableMaps;
+	}
+
 	public GameMap getCurrentGameMap() {
 		return this.currentGameMap;
+	}
+
+	public int getMapCount() {
+		return this.mapCount;
 	}
 
 	public void init() {
@@ -40,17 +50,41 @@ public class MapManager {
 			}
 		}
 		Collections.shuffle(this.availableMaps);
+		this.mapCount = this.availableMaps.size();
 	}
 
 	private void loadMap(String filename) {
 		EntityManager.getInstance().getEntites().clear();
 		EntityManager.getInstance().setPlayer(null);
 		String[][] pixels = ImageProcessor.getPixelsFromImage("maps/" + filename);
+		Random random = new Random();
 		Tile[][] tiles = new Tile[pixels.length][pixels[0].length];
 		for (int x = 0; x < pixels.length; x++) {
 			for (int y = 0; y < pixels[x].length; y++) {
 				if (pixels[x][y].startsWith("000000")) {
-					tiles[x][pixels[x].length - 1 - y] = Tile.WALL;
+					if (random.nextInt(1000) < 200) {
+						int rnd = random.nextInt(6);
+						if (rnd == 0) {
+							tiles[x][pixels[x].length - 1 - y] = Tile.WALL1;
+						} else if (rnd == 1) {
+							tiles[x][pixels[x].length - 1 - y] = Tile.WALL2;
+						}
+						if (rnd == 2) {
+							tiles[x][pixels[x].length - 1 - y] = Tile.WALL3;
+						}
+						if (rnd == 3) {
+							tiles[x][pixels[x].length - 1 - y] = Tile.WALL4;
+						}
+						if (rnd == 4) {
+							tiles[x][pixels[x].length - 1 - y] = Tile.WALL5;
+						}
+						if (rnd == 5) {
+							tiles[x][pixels[x].length - 1 - y] = Tile.WALL6;
+						}
+					} else {
+						tiles[x][pixels[x].length - 1 - y] = Tile.WALL1;
+					}
+
 				} else if (pixels[x][y].startsWith("0000ff")) {
 					tiles[x][pixels[x].length - 1 - y] = Tile.DOOR;
 				} else if (pixels[x][y].startsWith("ff0000")) {
@@ -84,6 +118,10 @@ public class MapManager {
 			System.out.println("loading " + filename);
 			this.loadMap(filename);
 		}
+	}
+
+	public void setAvailableMaps(List<String> availableMaps) {
+		this.availableMaps = availableMaps;
 	}
 
 	public void setCurrentGameMap(GameMap currentGameMap) {

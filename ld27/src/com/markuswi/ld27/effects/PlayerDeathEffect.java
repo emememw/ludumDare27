@@ -27,7 +27,10 @@ public class PlayerDeathEffect extends Effect {
 			Vector3 vector = CameraManager.getInstance().translateToWorldCoordinates(100, 100);
 			FontManager.getInstance().getFonts().get("ps2").setScale(1f);
 			FontManager.getInstance().getFonts().get("ps2").draw(batch, "Game Over :(", vector.x + 120, vector.y);
-			FontManager.getInstance().getFonts().get("ps2").draw(batch, "[SPACE] to restart", vector.x + 5, vector.y - 80);
+			FontManager.getInstance().getFonts().get("ps2").draw(batch, "Your journey ends", vector.x + 30, vector.y - 90);
+			FontManager.getInstance().getFonts().get("ps2")
+					.draw(batch, "on Level " + GameStateManager.getInstance().getCurrentLevel(), vector.x + 150, vector.y - 150);
+			FontManager.getInstance().getFonts().get("ps2").draw(batch, "[SPACE] to try again", vector.x - 25, vector.y - 250);
 		}
 	}
 

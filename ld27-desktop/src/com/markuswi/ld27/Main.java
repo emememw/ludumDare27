@@ -8,6 +8,7 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "ld27";
 		cfg.useGL20 = true;
+		cfg.resizable = false;
 		cfg.width = 800;
 		cfg.height = 480;
 
